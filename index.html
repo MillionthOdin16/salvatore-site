@@ -144,6 +144,11 @@
       50% { opacity: 1; }
     }
 
+    /* ── ABOUT ── */
+    #about {
+      padding-top: 120px;
+    }
+
     /* ── ESSENTIALS ── */
     #essentials { padding-top: 120px; }
     .section-label {
@@ -259,6 +264,8 @@
     }
 
     .channel-icon { font-size: 1.5rem; text-align: center; }
+
+    .channel-icon.lofi::before { content: '🎵'; }
 
     .channel-label {
       font-family: 'Cormorant Garamond', serif;
@@ -422,6 +429,7 @@
 
     .spin-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(245,166,35,0.4); }
     .spin-btn:active { transform: scale(0.97); }
+    .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* ── LEGO BUILDER ── */
     #lego { padding-top: 120px; }
@@ -744,6 +752,10 @@
       gap: 12px;
     }
 
+    @media (max-width: 768px) {
+      .nav-dots { display: none; }
+    }
+
     .nav-dot {
       width: 8px; height: 8px;
       border-radius: 50%;
@@ -815,14 +827,13 @@
     .about-text {
       max-width: 600px;
       text-align: center;
-      color: var(--cream-dim);
-      font-size: 1rem;
       line-height: 1.9;
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.15rem;
+      font-style: italic;
     }
 
-    .about-text em { color: var(--amber); font-style: italic; }
+    .about-text em { color: var(--amber); }
   </style>
 </head>
 <body>
@@ -939,7 +950,7 @@
         </div>
       </div>
       <div class="channel">
-        <span class="channel-icon">&#1279</span>
+        <span class="channel-icon lofi"></span>
         <div class="slider-wrap" style="grid-column: 2 / 4;">
           <span class="channel-label">Lo-fi</span>
           <input type="range" class="channel-slider" id="lofiSlider" min="0" max="100" value="0">
@@ -1155,7 +1166,7 @@ function createStars() {
 createStars();
 
 function maybeShoot() {
-  if (Math.random()() < 0.003) {
+  if (Math.random() < 0.003) {
     shootingStars.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height * 0.5,
@@ -1285,6 +1296,12 @@ function createNoise(type) {
     }
   } else if (type === 'fire') {
     for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+  } else if (type === 'lofi') {
+    // Lo-fi: low-pass filtered noise with occasional vinyl crackle
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.3;
+      if (Math.random() < 0.0005) data[i] = (Math.random() - 0.5) * 0.8;
+    }
   } else if (type === 'wind') {
     for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
   }
@@ -1294,8 +1311,8 @@ function createNoise(type) {
   source.loop = true;
 
   const filter = ctx.createBiquadFilter();
-  filter.type = type === 'rain' ? 'lowpass' : type === 'crickets' ? 'bandpass' : 'lowpass';
-  filter.frequency.value = type === 'rain' ? 800 : type === 'crickets' ? 3000 : type === 'fire' ? 500 : 400;
+  filter.type = type === 'rain' ? 'lowpass' : type === 'crickets' ? 'bandpass' : type === 'lofi' ? 'lowpass' : 'lowpass';
+  filter.frequency.value = type === 'rain' ? 800 : type === 'crickets' ? 3000 : type === 'lofi' ? 400 : type === 'fire' ? 500 : 400;
 
   const gain = ctx.createGain();
   gain.gain.value = 0;
@@ -1312,7 +1329,7 @@ function initAudio() {
   if (!audioNodes.rain) {
     audioNodes.rain = createNoise('rain');
     audioNodes.crickets = createNoise('crickets');
-    audioNodes.lofi = createNoise('wind'); // wind as lofi base
+    audioNodes.lofi = createNoise('lofi');
     audioNodes.fire = createNoise('fire');
     audioNodes.wind = createNoise('wind');
   }
@@ -1487,8 +1504,9 @@ function openTalk(el) {
 function openDogModal(el) {
   const img = el.querySelector('img');
   const overlay = el.querySelector('.dog-overlay').textContent;
+  const highResSrc = img.src.replace('w=400&h=400', 'w=800');
   document.getElementById('modalTitle').textContent = overlay;
-  document.getElementById('modalBody').innerHTML = `<img src="${img.src.replace('w=400&h=400','w=800')}" style="width:100%;border-radius:12px;margin-bottom:16px;" alt="${img.alt}">`;
+  document.getElementById('modalBody').innerHTML = `<img src="${highResSrc}" style="width:100%;border-radius:12px;margin-bottom:16px;" alt="${img.alt}" onerror="this.src='${img.src}'">`;
   document.getElementById('modal').classList.add('open');
 }
 
