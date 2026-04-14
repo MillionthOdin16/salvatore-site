@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salvatore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0a0e1a;
+      --navy-mid: #111827;
+      --navy-light: #1a2235;
+      --amber: #f5a623;
+      --amber-dim: #c47d0e;
+      --amber-glow: rgba(245, 166, 35, 0.15);
+      --gold: #d4a017;
+      --cream: #f5f0e8;
+      --cream-dim: #b8b0a0;
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(245,166,35,0.2);
+      --star: rgba(255,255,255,0.8);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--cream);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Stars */
+    #stars-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Sections */
+    section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+
+    /* ── HERO ── */
+    #hero {
+      text-align: center;
+      position: relative;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 15vw, 12rem);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--amber);
+      text-shadow: 0 0 80px rgba(245,166,35,0.4), 0 0 160px rgba(245,166,35,0.15);
+      line-height: 1;
+      animation: nameReveal 2s ease-out both;
+    }
+
+    @keyframes nameReveal {
+      from { opacity: 0; transform: translateY(30px); letter-spacing: 0.3em; }
+      to { opacity: 1; transform: translateY(0); letter-spacing: 0.05em; }
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--cream-dim);
+      margin-top: 20px;
+      animation: fadeUp 1.5s 0.8s ease-out both;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--amber-dim);
+      margin-top: 16px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: fadeUp 1.5s 1.2s ease-out both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--cream-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      animation: fadeUp 1.5s 2s ease-out both;
+    }
+
+    .scroll-hint .arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--amber), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* ── ESSENTIALS ── */
+    #essentials { padding-top: 120px; }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 300;
+      color: var(--cream);
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .essentials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at top left, var(--amber-glow), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card:hover { border-color: rgba(245,166,35,0.5); transform: translateY(-4px); }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: var(--cream-dim);
+      line-height: 1.7;
+    }
+
+    .card-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--cream-dim);
+      margin-top: 8px;
+      padding-left: 12px;
+      border-left: 2px solid var(--amber-dim);
+    }
+
+    /* ── NIGHT OWL MIXER ── */
+    #night-mixer { padding-top: 120px; }
+
+    .mixer-container {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .mixer-description {
+      text-align: center;
+      color: var(--cream-dim);
+      font-size: 0.95rem;
+      margin-bottom: 48px;
+      line-height: 1.8;
+    }
+
+    .sound-channels {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .channel {
+      display: grid;
+      grid-template-columns: 40px 1fr 80px;
+      align-items: center;
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .channel-icon { font-size: 1.5rem; text-align: center; }
+
+    .channel-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--cream);
+    }
+
+    .channel-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--navy-light);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .channel-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--amber);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(245,166,35,0.5);
+    }
+
+    .channel-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--amber);
+      cursor: pointer;
+      border: none;
+    }
+
+    .volume-display {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--amber-dim);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .channel-controls {
+      display: contents;
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      grid-column: 2 / 4;
+    }
+
+    /* Master toggle */
+    .master-toggle {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: 1px solid var(--amber-dim);
+      color: var(--amber);
+      padding: 12px 32px;
+      border-radius: 100px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .toggle-btn:hover, .toggle-btn.active {
+      background: var(--amber);
+      color: var(--navy);
+    }
+
+    /* ── ADVENTURE MACHINE ── */
+    #adventure { padding-top: 120px; }
+
+    .adventure-container {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .adventure-machine {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      margin-top: 20px;
+    }
+
+    .adventure-machine::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    .machine-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      color: var(--amber);
+      margin-bottom: 32px;
+      font-style: italic;
+    }
+
+    .adventure-result {
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .adventure-destination {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--cream);
+      font-weight: 300;
+      transition: all 0.5s ease;
+    }
+
+    .adventure-activity {
+      font-size: 0.9rem;
+      color: var(--amber-dim);
+      margin-top: 8px;
+      font-style: italic;
+      transition: all 0.5s ease;
+    }
+
+    .adventure-empty {
+      color: var(--cream-dim);
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    .spin-btn {
+      background: var(--amber);
+      color: var(--navy);
+      border: none;
+      padding: 14px 40px;
+      border-radius: 100px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 700;
+    }
+
+    .spin-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(245,166,35,0.4); }
+    .spin-btn:active { transform: scale(0.97); }
+
+    /* ── LEGO BUILDER ── */
+    #lego { padding-top: 120px; }
+
+    .lego-container {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .lego-scene {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: var(--navy-light);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 30px 0;
+      cursor: crosshair;
+    }
+
+    .lego-ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(to top, #1a2235, transparent);
+    }
+
+    .lego-brick {
+      position: absolute;
+      border-radius: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      transition: box-shadow 0.2s;
+    }
+
+    .lego-brick:hover { box-shadow: 0 0 15px rgba(255,255,255,0.3); z-index: 10; }
+
+    .lego-stud {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      margin: 3px;
+      flex-shrink: 0;
+    }
+
+    .lego-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .lego-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--cream-dim);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .lego-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    .lego-color-picker {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .lego-color-swatch {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .lego-color-swatch.active, .lego-color-swatch:hover {
+      border-color: var(--cream);
+      transform: scale(1.2);
+    }
+
+    /* ── DEEP TALKS ── */
+    #deeptalks { padding-top: 120px; }
+
+    .talks-container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .talks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .talks-grid { grid-template-columns: 1fr; }
+    }
+
+    .talk-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      cursor: default;
+      transition: all 0.3s;
+    }
+
+    .talk-card:hover { border-color: rgba(245,166,35,0.5); transform: translateY(-3px); }
+
+    .talk-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--amber-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 12px;
+    }
+
+    .talk-prompt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--cream);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* ── SURVIVOR ── */
+    #survivor { padding-top: 120px; }
+
+    .survivor-container {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .survivor-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .survivor-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    .survivor-badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.15);
+      border: 1px solid var(--amber-dim);
+      color: var(--amber);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .survivor-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--cream);
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+
+    .survivor-subtitle {
+      color: var(--cream-dim);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .survivor-message {
+      background: rgba(245,166,35,0.08);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    .survivor-message p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--cream-dim);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* ── DOGS ── */
+    #dogs { padding-top: 120px; }
+
+    .dogs-container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .dogs-message {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--cream-dim);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .dogs-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .dog-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s;
+    }
+
+    .dog-card:hover { transform: scale(1.03); border-color: var(--amber); }
+
+    .dog-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dog-card .dog-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 16px 16px;
+      background: linear-gradient(to top, rgba(10,14,26,0.95), transparent);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      color: var(--cream);
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 24px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .footer-heart { color: var(--amber); }
+    .footer-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--cream-dim);
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    /* ── FLOATING LEGO ── */
+    .floating-legos {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-lego {
+      position: absolute;
+      opacity: 0.15;
+      animation: floatLego linear infinite;
+    }
+
+    @keyframes floatLego {
+      0% { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-20vh) rotate(360deg); }
+    }
+
+    /* ── REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── NAV DOTS ── */
+    .nav-dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--cream-dim);
+      opacity: 0.3;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .nav-dot:hover, .nav-dot.active {
+      opacity: 1;
+      background: var(--amber);
+      transform: scale(1.3);
+    }
+
+    /* ── MODAL ── */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(10,14,26,0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-content {
+      max-width: 600px;
+      width: 100%;
+      background: var(--navy-mid);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 40px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none;
+      border: none;
+      color: var(--cream-dim);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--amber); }
+
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+
+    .modal p {
+      color: var(--cream-dim);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ── ABOUT SECTION ── */
+    .about-text {
+      max-width: 600px;
+      text-align: center;
+      color: var(--cream-dim);
+      font-size: 1rem;
+      line-height: 1.9;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+    }
+
+    .about-text em { color: var(--amber); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- Floating Legos -->
+<div class="floating-legos" id="floatingLegos"></div>
+
+<!-- Navigation Dots -->
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <p class="hero-sub">this is</p>
+  <h1 class="hero-name">Salvatore</h1>
+  <p class="hero-tagline">overthinks everything &mdash; loves deeply</p>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <p class="section-label reveal">who he is</p>
+  <h2 class="section-title reveal">The Essentials</h2>
+  <p class="about-text reveal">
+    He can win anyone over with <em>food</em>. He feels most alive at <em>night</em>.<br>
+    He'll overthink one sentence for hours, but underneath all that noise is someone
+    fiercely <em>loyal</em>, endlessly <em>curious</em>, and quietly <em>brave</em>.<br>
+    He loves hard &mdash; even when it scares people away.
+  </p>
+</section>
+
+<!-- ── ESSENTIALS ── -->
+<section id="essentials">
+  <p class="section-label reveal">things he loves</p>
+  <h2 class="section-title reveal">What Matters</h2>
+  <div class="essentials-grid">
+    <div class="card reveal">
+      <span class="card-icon">&#127869;</span>
+      <h3 class="card-title">Food</h3>
+      <p class="card-text">Food, food, and more food. Anyone can win his heart with a great meal.</p>
+      <p class="card-quote">"I love interests in legos, reality tv, video games..."</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#128054;</span>
+      <h3 class="card-title">Dogs</h3>
+      <p class="card-text">Probably one of his favorite things ever. Animals in general, really.</p>
+      <p class="card-quote">"I love dogs prolly one of my favorite things ever"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#127916;</span>
+      <h3 class="card-title">Reality TV</h3>
+      <p class="card-text">Survivor is on his radar right now. Wants someone to watch it with him.</p>
+      <p class="card-quote">"u should rlly watch this season of survivor"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#127918;</span>
+      <h3 class="card-title">Video Games</h3>
+      <p class="card-text">Loves them. Part of his rotation of things that come and go.</p>
+      <p class="card-quote">"video games i love video games"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#127761;</span>
+      <h3 class="card-title">Night</h3>
+      <p class="card-text">Loves when it's night out. Deep talks under the stars hit different.</p>
+      <p class="card-quote">"I love when it's night out"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#128640;</span>
+      <h3 class="card-title">Spontaneous</h3>
+      <p class="card-text">Last minute trips. Going anywhere. Silent companionship that isn't awkward.</p>
+      <p class="card-quote">"doing spontaneous things like going on last minute trips"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#129523;</span>
+      <h3 class="card-title">Lego</h3>
+      <p class="card-text">Hands-on building. Interests that come and go, but Lego stays.</p>
+      <p class="card-quote">"I love interests in legos"</p>
+    </div>
+    <div class="card reveal">
+      <span class="card-icon">&#129504;</span>
+      <h3 class="card-title">Deep Talks</h3>
+      <p class="card-text">Life conversations at 2am. Silence that doesn't need filling.</p>
+      <p class="card-quote">"I love deep talks abt life"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── NIGHT OWL MIXER ── -->
+<section id="night-mixer">
+  <p class="section-label reveal">ambient</p>
+  <h2 class="section-title reveal">Night Owl Mixer</h2>
+  <p class="mixer-description reveal">Because he loves when it's night out. Mix your own late-night soundscape.</p>
+
+  <div class="mixer-container">
+    <div class="sound-channels reveal">
+      <div class="channel">
+        <span class="channel-icon">&#12778;</span>
+        <div class="slider-wrap" style="grid-column: 2 / 4;">
+          <span class="channel-label">Rain</span>
+          <input type="range" class="channel-slider" id="rainSlider" min="0" max="100" value="0">
+          <span class="volume-display" id="rainVol">0%</span>
+        </div>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#128123;</span>
+        <div class="slider-wrap" style="grid-column: 2 / 4;">
+          <span class="channel-label">Crickets</span>
+          <input type="range" class="channel-slider" id="cricketsSlider" min="0" max="100" value="0">
+          <span class="volume-display" id="cricketsVol">0%</span>
+        </div>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#1279</span>
+        <div class="slider-wrap" style="grid-column: 2 / 4;">
+          <span class="channel-label">Lo-fi</span>
+          <input type="range" class="channel-slider" id="lofiSlider" min="0" max="100" value="0">
+          <span class="volume-display" id="lofiVol">0%</span>
+        </div>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#128166;</span>
+        <div class="slider-wrap" style="grid-column: 2 / 4;">
+          <span class="channel-label">Fire Crackling</span>
+          <input type="range" class="channel-slider" id="fireSlider" min="0" max="100" value="0">
+          <span class="volume-display" id="fireVol">0%</span>
+        </div>
+      </div>
+      <div class="channel">
+        <span class="channel-icon">&#128140;</span>
+        <div class="slider-wrap" style="grid-column: 2 / 4;">
+          <span class="channel-label">Wind</span>
+          <input type="range" class="channel-slider" id="windSlider" min="0" max="100" value="0">
+          <span class="volume-display" id="windVol">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="master-toggle reveal">
+      <button class="toggle-btn" id="masterToggle" onclick="toggleAllSounds()">start soundscape</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── ADVENTURE MACHINE ── -->
+<section id="adventure">
+  <p class="section-label reveal">make it happen</p>
+  <h2 class="section-title reveal">Adventure Machine</h2>
+
+  <div class="adventure-container reveal">
+    <div class="adventure-machine">
+      <p class="machine-title">"let's go somewhere"</p>
+      <div class="adventure-result" id="adventureResult">
+        <p class="adventure-empty">press the button and find out where</p>
+      </div>
+      <button class="spin-btn" id="spinBtn" onclick="spinAdventure()">where to?</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── LEGO BUILDER ── -->
+<section id="lego">
+  <p class="section-label reveal">build something</p>
+  <h2 class="section-title reveal">Lego Builder</h2>
+
+  <div class="lego-container reveal">
+    <p class="mixer-description">Click anywhere on the canvas to place a lego brick. Stack 'em high.</p>
+
+    <div class="lego-color-picker">
+      <div class="lego-color-swatch active" style="background:#e53935" data-color="#e53935"></div>
+      <div class="lego-color-swatch" style="background:#1e88e5" data-color="#1e88e5"></div>
+      <div class="lego-color-swatch" style="background:#43a047" data-color="#43a047"></div>
+      <div class="lego-color-swatch" style="background:#fdd835" data-color="#fdd835"></div>
+      <div class="lego-color-swatch" style="background:#8e24aa" data-color="#8e24aa"></div>
+      <div class="lego-color-swatch" style="background:#ff6d00" data-color="#ff6d00"></div>
+      <div class="lego-color-swatch" style="background:#eceff1" data-color="#eceff1"></div>
+      <div class="lego-color-swatch" style="background:#37474f" data-color="#37474f"></div>
+    </div>
+
+    <div class="lego-scene" id="legoScene">
+      <div class="lego-ground"></div>
+    </div>
+
+    <div class="lego-controls">
+      <button class="lego-btn" onclick="addRandomLego()">+ random brick</button>
+      <button class="lego-btn" onclick="clearLego()">clear all</button>
+      <button class="lego-btn" onclick="buildTower()">build tower</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEEP TALKS ── -->
+<section id="deeptalks">
+  <p class="section-label reveal">2am energy</p>
+  <h2 class="section-title reveal">Deep Talk Prompts</h2>
+
+  <div class="talks-container">
+    <div class="talks-grid reveal">
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">01</div>
+        <p class="talk-prompt">What's a belief you hold that most people would find surprising?</p>
+      </div>
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">02</div>
+        <p class="talk-prompt">If you could relive one moment of your life, which would it be?</p>
+      </div>
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">03</div>
+        <p class="talk-prompt">What's something you've never told anyone but wish you could?</p>
+      </div>
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">04</div>
+        <p class="talk-prompt">What do you think happens after we die?</p>
+      </div>
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">05</div>
+        <p class="talk-prompt">What's the bravest thing you've ever done?</p>
+      </div>
+      <div class="talk-card" onclick="openTalk(this)">
+        <div class="talk-number">06</div>
+        <p class="talk-prompt">If you could live anywhere for a year, where would it be?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SURVIVOR ── -->
+<section id="survivor">
+  <p class="section-label reveal">season 48</p>
+  <h2 class="section-title reveal">Survivor</h2>
+
+  <div class="survivor-container reveal">
+    <div class="survivor-card">
+      <div class="survivor-badge">Now Streaming</div>
+      <h3 class="survivor-title">Survivor Season 48</h3>
+      <p class="survivor-subtitle">Watch it. Then talk about it.</p>
+
+      <div class="survivor-message">
+        <p>"u should rlly watch this season of survivor that's airing rn so we could talk abt it"</p>
+      </div>
+
+      <p style="margin-top: 24px; color: var(--cream-dim); font-size: 0.85rem;">
+        The seasons air Wednesday nights. Make it a thing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── DOGS ── -->
+<section id="dogs">
+  <p class="section-label reveal">the goodest things</p>
+  <h2 class="section-title reveal">Dogs</h2>
+
+  <div class="dogs-container">
+    <p class="dogs-message reveal">"I love dogs prolly one of my favorite things ever. And just animals in general."</p>
+
+    <div class="dogs-gallery reveal">
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop" alt="Happy golden retriever" loading="lazy">
+        <div class="dog-overlay">best friend energy</div>
+      </div>
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=400&fit=crop" alt="Playful husky" loading="lazy">
+        <div class="dog-overlay">night owl approved</div>
+      </div>
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=400&h=400&fit=crop" alt="Fluffy corgi" loading="lazy">
+        <div class="dog-overlay">loyal companion</div>
+      </div>
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=400&h=400&fit=crop" alt="German shepherd" loading="lazy">
+        <div class="dog-overlay">protective soul</div>
+      </div>
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=400&h=400&fit=crop" alt="Puppy pile" loading="lazy">
+        <div class="dog-overlay">warmth of many</div>
+      </div>
+      <div class="dog-card" onclick="openDogModal(this)">
+        <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&h=400&fit=crop" alt="Dalmatian" loading="lazy">
+        <div class="dog-overlay">spots and heart</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p class="footer-heart">&#10084;</p>
+  <p class="footer-text">for Salvatore &mdash; whoever he becomes</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h3 id="modalTitle">Deep Talk</h3>
+    <p id="modalBody"></p>
+  </div>
+</div>
+
+<script>
+// ── STARS ──
+const canvas = document.getElementById('stars-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let shootingStars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function createStars() {
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.5,
+      alpha: Math.random(),
+      speed: Math.random() * 0.005 + 0.002
+    });
+  }
+}
+createStars();
+
+function maybeShoot() {
+  if (Math.random()() < 0.003) {
+    shootingStars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5,
+      len: Math.random() * 80 + 40,
+      speed: Math.random() * 8 + 6,
+      angle: Math.PI / 4 + Math.random() * 0.3,
+      alpha: 1,
+      decay: Math.random() * 0.02 + 0.01
+    });
+  }
+}
+
+function animateStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Stars
+  stars.forEach(s => {
+    s.alpha += Math.sin(Date.now() * s.speed) * 0.01;
+    s.alpha = Math.max(0.1, Math.min(1, s.alpha));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+    ctx.fill();
+  });
+
+  // Shooting stars
+  shootingStars = shootingStars.filter(ss => ss.alpha > 0);
+  shootingStars.forEach(ss => {
+    ctx.beginPath();
+    ctx.moveTo(ss.x, ss.y);
+    ctx.lineTo(ss.x - Math.cos(ss.angle) * ss.len, ss.y - Math.sin(ss.angle) * ss.len);
+    ctx.strokeStyle = `rgba(255, 255, 255, ${ss.alpha})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ss.x -= Math.cos(ss.angle) * ss.speed;
+    ss.y -= Math.sin(ss.angle) * ss.speed;
+    ss.alpha -= ss.decay;
+  });
+
+  maybeShoot();
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+// ── FLOATING LEGOS ──
+const legoColors = ['#e53935','#1e88e5','#43a047','#fdd835','#8e24aa','#ff6d00','#eceff1','#37474f'];
+function createFloatingLegos() {
+  const container = document.getElementById('floatingLegos');
+  for (let i = 0; i < 12; i++) {
+    const lego = document.createElement('div');
+    lego.className = 'floating-lego';
+    const size = Math.floor(Math.random() * 2) + 1;
+    const w = size * 20 + 10;
+    const h = size * 8 + 4;
+    lego.style.left = Math.random() * 100 + '%';
+    lego.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    lego.style.animationDelay = (Math.random() * -30) + 's';
+    lego.style.width = w + 'px';
+    lego.style.height = h + 'px';
+    lego.style.background = legoColors[Math.floor(Math.random() * legoColors.length)];
+    lego.style.borderRadius = '3px';
+    lego.style.opacity = 0.06 + Math.random() * 0.08;
+    container.appendChild(lego);
+  }
+}
+createFloatingLegos();
+
+// ── NAV DOTS ──
+const sections = ['hero','about','essentials','night-mixer','adventure','lego','deeptalks','survivor','dogs'];
+const navDots = document.getElementById('navDots');
+sections.forEach((id, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.title = id.replace('-',' ');
+  dot.onclick = () => document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  navDots.appendChild(dot);
+});
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY + window.innerHeight / 2;
+  let current = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) current = i;
+  });
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+});
+
+// ── REVEAL ON SCROLL ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── NIGHT OWL MIXER ──
+let audioCtx = null;
+const audioNodes = {};
+let masterPlaying = false;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+function createNoise(type) {
+  const ctx = getAudioCtx();
+  const bufferSize = ctx.sampleRate * 4;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  if (type === 'rain') {
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.4;
+  } else if (type === 'crickets') {
+    for (let i = 0; i < bufferSize; i++) {
+      const t = i / ctx.sampleRate;
+      data[i] = Math.sin(t * 4000 * Math.PI * 2) * Math.sin(t * 13 * Math.PI * 2) * Math.random() * 0.8;
+    }
+  } else if (type === 'fire') {
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+  } else if (type === 'wind') {
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+  }
+
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = type === 'rain' ? 'lowpass' : type === 'crickets' ? 'bandpass' : 'lowpass';
+  filter.frequency.value = type === 'rain' ? 800 : type === 'crickets' ? 3000 : type === 'fire' ? 500 : 400;
+
+  const gain = ctx.createGain();
+  gain.gain.value = 0;
+
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  source.start();
+
+  return { source, filter, gain };
+}
+
+function initAudio() {
+  if (!audioNodes.rain) {
+    audioNodes.rain = createNoise('rain');
+    audioNodes.crickets = createNoise('crickets');
+    audioNodes.lofi = createNoise('wind'); // wind as lofi base
+    audioNodes.fire = createNoise('fire');
+    audioNodes.wind = createNoise('wind');
+  }
+}
+
+function setVolume(channel, value) {
+  if (!audioNodes[channel]) return;
+  const vol = value / 100;
+  audioNodes[channel].gain.gain.setTargetAtTime(vol * 0.3, audioCtx.currentTime, 0.1);
+  document.getElementById(channel + 'Vol').textContent = value + '%';
+}
+
+['rain','crickets','lofi','fire','wind'].forEach(ch => {
+  document.getElementById(ch + 'Slider').addEventListener('input', (e) => {
+    initAudio();
+    setVolume(ch, parseInt(e.target.value));
+    if (parseInt(e.target.value) > 0 && !masterPlaying) {
+      masterPlaying = true;
+      document.getElementById('masterToggle').textContent = 'soundscape on';
+      document.getElementById('masterToggle').classList.add('active');
+    }
+  });
+});
+
+function toggleAllSounds() {
+  initAudio();
+  masterPlaying = !masterPlaying;
+  const btn = document.getElementById('masterToggle');
+  if (masterPlaying) {
+    btn.textContent = 'soundscape on';
+    btn.classList.add('active');
+    // Start all at their current slider values
+    ['rain','crickets','lofi','fire','wind'].forEach(ch => {
+      const slider = document.getElementById(ch + 'Slider');
+      setVolume(ch, parseInt(slider.value));
+    });
+  } else {
+    btn.textContent = 'start soundscape';
+    btn.classList.remove('active');
+    ['rain','crickets','lofi','fire','wind'].forEach(ch => {
+      if (audioNodes[ch]) audioNodes[ch].gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+    });
+  }
+}
+
+// ── ADVENTURE MACHINE ──
+const adventures = [
+  { dest: 'Motel 6 off the highway', activity: 'walk in, get a room, see what happens' },
+  { dest: 'The coast', activity: 'drive until you hit water, find a diner' },
+  { dest: 'A city you\'ve never been to', activity: 'aimless wandering, no plan' },
+  { dest: 'A 24-hour diner', activity: 'coffee, pie, and whatever conversation brings' },
+  { dest: 'The mountains', activity: 'find a trail at midnight, climb it' },
+  { dest: 'Nowhere in particular', activity: 'just drive. windows down. music loud.' },
+  { dest: 'An airport', activity: 'first flight out with no destination' },
+  { dest: 'A random small town', activity: 'explore like you live there' },
+  { dest: 'The ocean at 3am', activity: 'standing in the water, talking about nothing' },
+  { dest: 'A parking garage', activity: 'rooftop view of the city at night' },
+  { dest: 'A gas station', activity: 'buy snacks, sit in the parking lot, exist' },
+  { dest: 'Somewhere with good food', activity: 'drive until you find a place that looks right' },
+];
+
+function spinAdventure() {
+  const result = document.getElementById('adventureResult');
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+
+  result.style.opacity = '0';
+  result.style.transform = 'translateY(10px)';
+
+  setTimeout(() => {
+    const pick = adventures[Math.floor(Math.random() * adventures.length)];
+    result.innerHTML = `
+      <p class="adventure-destination">${pick.dest}</p>
+      <p class="adventure-activity">${pick.activity}</p>
+    `;
+    result.style.opacity = '1';
+    result.style.transform = 'translateY(0)';
+    btn.disabled = false;
+  }, 400);
+}
+
+// ── LEGO BUILDER ──
+let selectedColor = '#e53935';
+let legoCount = 0;
+
+document.querySelectorAll('.lego-color-swatch').forEach(s => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.lego-color-swatch').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    selectedColor = s.dataset.color;
+  });
+});
+
+document.getElementById('legoScene').addEventListener('click', (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  placeLego(x, y);
+});
+
+function placeLego(x, y, size = 1) {
+  const scene = document.getElementById('legoScene');
+  const brick = document.createElement('div');
+  brick.className = 'lego-brick';
+
+  const cols = size * 2;
+  const rows = 1;
+  const studW = 14;
+  const studH = 14;
+  const gap = 6;
+  const brickW = cols * studW + (cols + 1) * gap;
+  const brickH = rows * studH + (rows + 1) * gap + 4; // extra for studs
+
+  brick.style.width = brickW + 'px';
+  brick.style.height = brickH + 'px';
+  brick.style.left = (x - brickW / 2) + 'px';
+  brick.style.top = (y - brickH / 2) + 'px';
+  brick.style.background = selectedColor;
+  brick.style.padding = gap + 'px';
+  brick.style.display = 'flex';
+  brick.style.flexWrap = 'wrap';
+  brick.style.gap = gap + 'px';
+  brick.style.alignContent = 'flex-start';
+
+  for (let i = 0; i < cols; i++) {
+    const stud = document.createElement('div');
+    stud.className = 'lego-stud';
+    stud.style.background = selectedColor;
+    stud.style.boxShadow = `inset -2px -2px 4px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,255,255,0.2)`;
+    brick.appendChild(stud);
+  }
+
+  brick.onclick = (e) => { e.stopPropagation(); brick.remove(); legoCount--; };
+  scene.appendChild(brick);
+  legoCount++;
+}
+
+function addRandomLego() {
+  const scene = document.getElementById('legoScene');
+  const x = Math.random() * (scene.offsetWidth - 60) + 30;
+  const y = Math.random() * (scene.offsetHeight - 80) + 40;
+  const size = Math.floor(Math.random() * 2) + 1;
+  placeLego(x, y, size);
+}
+
+function clearLego() {
+  const bricks = document.querySelectorAll('#legoScene .lego-brick');
+  bricks.forEach((b, i) => {
+    setTimeout(() => b.remove(), i * 30);
+  });
+  legoCount = 0;
+}
+
+function buildTower() {
+  const scene = document.getElementById('legoScene');
+  const baseX = scene.offsetWidth / 2;
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => {
+      placeLego(baseX + (Math.random() - 0.5) * 20, scene.offsetHeight - 40 - i * 28, 1);
+    }, i * 120);
+  }
+}
+
+// ── MODALS ──
+function openTalk(el) {
+  const prompt = el.querySelector('.talk-prompt').textContent;
+  document.getElementById('modalTitle').textContent = el.querySelector('.talk-number').textContent + ' — Deep Talk';
+  document.getElementById('modalBody').textContent = prompt + '\n\nThis is a starting point. Follow where it goes.';
+  document.getElementById('modal').classList.add('open');
+}
+
+function openDogModal(el) {
+  const img = el.querySelector('img');
+  const overlay = el.querySelector('.dog-overlay').textContent;
+  document.getElementById('modalTitle').textContent = overlay;
+  document.getElementById('modalBody').innerHTML = `<img src="${img.src.replace('w=400&h=400','w=800')}" style="width:100%;border-radius:12px;margin-bottom:16px;" alt="${img.alt}">`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
